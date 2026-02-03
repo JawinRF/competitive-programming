@@ -1,0 +1,79 @@
+the jury calculates OR  
+ 
+but we need XOR   
+
+x = ( pa | pb )  
+y = ( pc | pd ) 
+
+
+let k = MSB(n-1 )  
+then maximum value = 2^(k+1) - 1 
+
+take n1 = 2^k and n2 = (2^k) - 1 
+
+
+so need to find 2^k , 2^k - 1 
+
+let m = mask of k bits 
+
+given any n1 we can instead find n1^k instead 
+provide n1<n
+a,b,c,d can be freely selectd   
+
+1) let i be the index of p[i] = n-1
+
+2)let s = { } denote the set of all indices 'j' such that 
+p[i] | p[j] is maximised 
+
+3)if we find the smallest such p[j] then 
+p[j]^p[i] is 2^k -1 
+
+Algo :  
+1) we can caluclute n-1 
+by keeping track of max_idx   
+let max_idx = 0 ; 
+
+iterate from i=1 to n-1 
+query (a,b) = (max_idx,max_idx) and (c,d) = (i,i)  
+
+if jury answers as < then : 
+	max_idx = i   
+continue  
+
+at the end max_idx is the index of n-1 
+
+This takes n-1 queries
+
+2)
+keep a vector<int> id initialised to max_idx
+
+iterate from i=0 to n-1 :  
+	query a,b = (id[0],max_idx)  and c,d = (i,max_idx) 
+	if result is < :  
+		then clear id
+		push i into it 
+		
+	else if result is == :  
+		push i into it 
+this takes n queries 
+
+3)
+
+maintain a j 
+initialise j = id[0]  
+
+iterate over id :  
+	query (a,b) = (j,j) and (c,d) = (curr_id,curr_id)   
+	if result is > :  
+		j = curr_id 
+
+ANswer is max_idx and j 
+		
+
+  
+
+
+
+
+
+
