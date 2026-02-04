@@ -1,0 +1,66 @@
+There are n values 
+ 
+The all pairs (xi, yi) are disticnt means that 
+
+In object A ,
+	there are no multiedge btw two nodes
+in object B ,  
+	there are no duplicate points in space 
+	
+since there are n edges 
+clearly the shortest path can't have more than n edges 
+
+
+note the no of times x[i] has ocurred shows the outdegree of x[i]  
+
+each edge corespnds to one outdegree 
+=> sum of outdgree of nodes  =  n   
+
+=> if a node has occurred more than once it means atleast one node is missing from array as array size is fixed = [ n ]  
+
+the node can be found by iterating and checking if it exists
+
+so from thaat node every other node is unreachable 
+
+so query must return 0  , for any node i  
+if it doesnt than its not a object of type A 
+if query ouput is 0 , it cant be B as there are no duplicate points 
+
+
+what if each node appears once 
+then it means i will be stuck in a loop as moving from x[i]->y[i] has no end as it goes on forever .  
+but since each node as only one outdegree meaning only one successor the graph takes the form of 
+1)
+ 1 -> 2 -> 3 -> 4- > 5
+ 		^    |
+ 		|    v
+ 		7 <- 6
+ 		
+ or 
+ 2) a circular linked list 
+ 
+ 3)disconnected components
+  1 <-> 2    3 -> 4- > 5
+ 		^    |
+ 		|    v
+ 		7 <- 6
+ 
+ or smtg i cant think of regardless 
+
+it can be thought that manhattan between 1 and n is atleast n-1 
+but if shortest distance between 1 and n is n-1 then btwn n and 1 it cant be n-1 
+hence 	
+out<<"? "<<pos1<<" "<<posn<<endl ;  
+        int res1 ; cin >> res1 ; 
+        cout<<"? "<<posn<<" "<<pos1<<endl ;  
+        int res2 ; cin >> res2 ; 
+        if(res1>=n-1 && res2>=n-1){
+            cout<<"! B"<<endl ; 
+        }
+        else cout<<"! A"<<endl ; 
+        
+ is enough  
+
+thus either of v->u or u->v must give 0   if not both the outputs must match cz manhattan distance doesnt care of other of query
+
+
