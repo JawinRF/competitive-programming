@@ -1,91 +1,91 @@
-notice that    
+any idea for this the only thing i noticed is the doubling can only be done log(maxvalue in b) 
 
-even reversed works 
+for b[i] = 1e6 it takes atmost 20 doubling step 
+
+let say no of doubling steps were fixed to k    
+
+then
+
+a[i]  
+2*a[i]  
+
+2^2 *a[i]  
+
+2^2  * a[i]  + x1
+
+2^3*a[i] + 2*x1
+
+2^4 a[i] + 2^2 * x1
+
+2^4 a[i]  + 2^2 * x1 + x2 
+
+2^5 a[i] + 2^3 x1 + 2x2
+
+2^6 a[i]  + 2^4 x1 + 2^2 x2 + x3 
 
 
-1 2 3 4 
-
-i can swtch even places
-
-1 4 3 2 
-
-so min a solution with min no of fixed pts = n/2 exists
-
-observation : value 1 must be at index =1  
-reason : let j be at indx 1 and 1 be at index k   
-gcd(j,1) =  1 and gcd(1,k) = 1 hence the array is not good 
-
-1 4 6 2 5 3 
+2^k a[i]  + x1*2^
 
 
-1 8 6 2 10 9 7 4 3 5 11 
+=> b[i] = a[i]*2^k + summation ( xj * 2^(k-j) ) from j=0 to k where j denotes the jth doubling and x[i][j] denotes the incement 
+done btwn j and j-1 doubling 
+since k is fixed 
 
-one algo seem to work is   
-keep a track of which place a value is at 
-iterate from i =1 to n :  
-	search for the smallest value non coprime to this value place it here and this there 
-	
-# The above didnt work for n= 6  the above gives selects 2 , 6 instead of 3,6   
-so instead tend to have the newest umatched divisor to be swapped 
+the summation must form b[i] - a[i]*2^k  
+
+we can use greedy to minize xj 
+use highest power until its not possible
+
 
 void solve(){
-    int n ; cin >> n  ;  
-    vector<int> v(n+1) , pos(n+1) ;  
-    iota(all(pos),0) ;  iota(all(v),0) ;  
-    
-    // for(int i = 4 ; i<=n ; ++i){
-    //     bool flag = 0 ; 
-    //     // for(int j = 2 ; j<i ; ++j){
-    //     //     if(__gcd(i,j)>1 && v[j]==j){
-    //     //         swap(v[i],v[pos[j]]) ;  
-    //     //         pos[i] = pos[j] ;  
-    //     //         pos[j] = i ; 
-    //     //         // cout<<i<<" "<<j<<"\n" ;
-    //     //         flag = 1 ;
-    //     //         break ; 
-    //     //     }
-    //     // }
-    //     if(!flag){
-    //         for(int j = 2 ; j<i ; ++j){
-    //             if(__gcd(i,j)>1 ){
-    //                 swap(v[i],v[pos[j]]) ;  
-    //                 pos[i] = pos[j] ;  
-    //                 pos[j] = i ; 
-    //                 // cout<<i<<" "<<j<<"\n" ;
-    //                 flag = 1 ;
-    //                 break ; 
-    //             }
-    //         }
-    //     }
-    // }
-    vector<int> mpp(n+1) ; iota(all(mpp),0) ; 
-    for(int i = 2 ; i<=n ; ++i){
-        for(int j = 2*i ; j<=n ; j+=i){
-            mpp[j] = i ; 
+    int n ; cin >> n  ; 
+    vector<int> a(n) , b(n) ; read(a) ; read(b) ;  
+    int minOp = INT_MAX;  
+    for(int k = 0 ; k<= 20 ; ++k){
+        int curr = 0 ; 
+        int flag = 0 ;
+        for(int i = 0 ; i<n ; ++i){
+            int sum = b[i] - (a[i]<<k) ; 
+            if(sum<0){
+                flag = 1 ; 
+                break ; 
+            }
+            for(int j = 0 ; j<=k ; ++j){
+                int t = (sum>>(k-j)) ; 
+                curr += t ; 
+                sum -= (t<<(k-j)) ;  
+            }
         }
+        if(!flag)minOp = min(k+curr,minOp) ; 
     }
-    for(int i = 1 ; i<=n ; ++i){
-        swap(v[i],v[mpp[i]]) ;  
-        pos[i] = pos[mpp[i]] ;  
-        pos[mpp[i]] = i ; 
-    }
-    show(v,1) ; 
+    put(minOp)
 }
-with the above tweaking i came up with this 
-
-Reason for this being good :  
-consider the number i :  
-	if j is divisor of i  then gcd(i,j) = j  
-	1) if such j exists then existing pos of j will increase does it wont be a fixed pt and i decrease meaning it cant be either 
-	
-	2) if no such j exists then if any multiple exists then this will be picked immediately  
-	
-	
-	
-summation n/1 + n /2 + n/3 + n/4 +.. = O(nlogn) [ harmonic series ]   
 
 
-hence composite are moved by themselves , primes are moved by multiples . Large primes ( > n / 2) that have neither divisors or multiples stay at
-their place 
+but note that the highest cost is piad by highest power rest pay at most 1 for each bit 
+
+essentialy  
+so in this problme doing large number of single increments before any doubling operatios is best strategy 
+
+like all weightage is on the 2^k double i.e the inital increments 
+i can it as a sequnce with b1 b1 b2 b2 b3 b6 b4 .. where bi denotes increment of 1 on ith place 
+this sequence has duplcates so (b1 + b1 + b2 + ... )!/(b1 + b1 + ...) !*(b2+...)!.... 
+
+after this its increments bfpre the second doubling each place has at most one increment 
+hence the sequence is unique and looks like 
+
+b1 b3 b5 b6 b9 
+
+let it be S then multiply by S!
+
+then again by S2! 
+
+and so on 
+
+Total=(Stage 0 Ways)×(Stage 1 Ways)×⋯×(Stage k Ways)
+
+(Total Increments in Stage j)! for stage ! =0   
+
+(Total Increments in Stage 0)!​/((Count of b1)!×(Count of b2)!×…)  for stage = 0   
 
 
