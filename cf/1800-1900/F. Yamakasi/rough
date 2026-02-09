@@ -1,0 +1,85 @@
+for a pref[i] consider indices j 
+such that pref[j] = s + pref[i]
+
+for i find all min j>=i such that max [i,j] = x  
+all indices after this are valid 
+
+
+
+compute pref   
+
+create map of freq of pref just before first index where a[index] > x 
+
+for current i
+count of all possible valid ends where subarray sum = s is map[p+s]    
+now we need to remove invalid such j's ..  
+it occurs when the subay cnd is met but not the max = x condn   
+
+to count optimistically slide window from i to index doing mpp[p[i]]  when sliding
+and initializing answer[i] = mpp[p[i]+s] during i    
+
+now compute map for all p[i] where i<index of first element = x  in [i,index]  
+if no such exists do it till index 
+
+now subtract mpp[p[i]+s] from answer 
+
+
+	
+uptil next idx where a[i]>x 
+compute pref
+init for all indices uptil i mpp[p[i]+s]  
+ 
+
+now subtraction 
+
+make map from current i to next idx j where a[j]==x  
+
+compute map 
+
+and do --  
+
+// inclusion
+
+int j = 0 ;
+for(int i = 0 ;i<=n ; ++i){
+	if(i==n || v[i]>x){
+		map<int,int> mpp ;   
+		for(int k = j ; k<i ; ++k){
+			mpp[p[k]]++ ;  
+		}
+		
+		for(int k = j ; k<i ; ++k){
+			int sum = s + (k>0?p[k-1]:0LL) ; 
+			ans[k] = mpp[sum] ; 
+			mpp[p[k]]-- ;  
+		}
+		j = i+1 ;  
+	}
+}
+
+// exclusion
+
+int j = 0; 
+for(int i = 0 ; i<=n ; ++i){
+	if(v[i]==x || v[i]>x || i==n){
+		
+		map<int,int> mpp ;  
+		for(int k = j ; k<i ; ++k){
+			mpp[p[k]]++ ; 
+		}
+		for(int k = j ; k<i ; ++k){
+			int sum = s + (k>0?p[k-1]:0LL) ;
+			ans[k] -= mpp[sum] ;  
+			mpp[p[k]]--  ;  
+		}
+		j = i+1 ;  
+	}
+}
+			
+
+	
+
+
+ 
+
+
