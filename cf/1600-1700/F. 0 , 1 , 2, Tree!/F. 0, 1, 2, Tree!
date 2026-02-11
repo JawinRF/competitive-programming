@@ -1,0 +1,142 @@
+2 degree miust be filled first   
+
+reason 
+cosnider 
+a linked list of nodes with a branch 
+
+now the 2 degree node i.e the brachn point diverges into two separates ways  
+the max length from branch pt can be manuered to head of the linked list , whih=tout decresing 2 degree node it reduces the height of tree or keeps it same
+
+fill in lvl order due to this reason  
+
+
+
+consider the left right from each node in last row now of leaf nodes must be atleast that much cz adding a 1 degree before the leaf doesnt change leaf cnt   
+
+
+ 
+now fill one gree row wise and then 0 degree 
+
+
+i , 2i , 2i+1 , 
+
+1 , 2, 3    
+
+
+1 2 4 8 16 32   
+
+
+
+lvl + in_lvl*2 = leaf 
+
+void solve(){
+     int a , b , c ; cin >> a >> b >> c ;   
+     
+     // tree edges  =  n - 1  = a+b+c-1   
+     // is same as 2*a + b
+     if ( a + 1 != c ){
+     		put(-1) ;  
+     		return  ; 
+     }
+     if(a == 0 && b == 0 && c==1){
+     	put(0) ;  
+     	return ;  
+     }
+     int h  = 0  ;  
+     int curr = 1 ;   
+     while(a-curr>=0){
+     	a -= curr ;  
+     	curr *= 2 ;  
+     	h++ ;  
+     }
+     if(a+b>0)h++ ;  
+     int a_in_layer = a ;   
+     int rem = curr - a ;   
+     int b_in_layer = min(b,rem) ;  
+     b -= b_in_layer ;  
+     
+     int next = (a_in_layer*2)  + b_in_layer ;   
+     
+     if(b>0){ // only b levels
+     	h += b/next ;   
+     	if(b%next!=0)h++ ;   
+     }
+      
+     put(h) ;
+}
+
+USING SIMULATION 
+ 
+struct node{
+	node *l , *r ; 
+	int degree  ;   
+	node(int d){ // degree 
+		degree = d ; 
+		l = r = NULL ; 
+	} 
+};  
+void solve(){
+     int a , b , c ; cin >> a >> b >> c ;   
+     if(a == 0 ){ 
+     	if(c!=1){
+     		put(-1) ;   
+     	}
+     	else put(b+c-1) ;  
+     	return ;  
+     }
+     int mxdepth = 0 ; 
+     node* root = new node(2) ; 
+     a-- ;   
+     queue<pair<node*,int>> q ;   
+     q.emplace(root,0) ;  
+     while(!q.empty()){
+     	auto [curr,d] = q.front() ;  
+     	q.pop() ;  
+     	mxdepth = max(mxdepth,d) ;   
+     	if(curr->degree == 0)continue ;  
+    
+     	if(a>0){
+     		a-- ; 
+     		curr->l = new node(2)  ;
+     	}
+     	else if(b>0){
+     		b-- ; 
+     		curr->l = new node(1)  ; 
+     	}
+     	else if(c>0){
+     		c-- ; 
+     		curr->l = new node(0)  ;
+     	}else{
+     		put(-1) ;  
+     		return ;   
+     	}
+     	q.emplace(curr->l,d+1) ; 
+     	if(curr->degree==2){
+	     	if(a>0){
+	     		a-- ; 
+	     		curr->r = new node(2)  ;
+	     	}
+	     	else if(b>0){
+	     		b-- ; 
+	     		curr->r = new node(1)  ; 
+	     	}
+	     	else if(c>0){
+	     		c-- ; 
+	     		curr->r = new node(0)  ;
+	     	}
+	     	else{
+	     		put(-1) ;  
+	     		return ;  
+	     	}
+	     	q.emplace(curr->r,d+1) ; 
+	}
+	
+	} 
+	if(a || b || c ){
+		put(-1) ;  
+		return  ;
+	}
+	put(mxdepth) ; 
+}
+ 
+
