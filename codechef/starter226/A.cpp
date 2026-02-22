@@ -29,20 +29,20 @@ ll exp(ll x, ll n, ll m) {
     x %= m;
     ll res = 1;
     while (n > 0) {
-        if (n % 2 == 1) {
-            res = res * x % m;
-        }
-        x = x * x % m;
-        n /= 2;
+	if (n % 2 == 1) {
+	    res = res * x % m;
+	}
+	x = x * x % m;
+	n /= 2;
     }
     return res;
 }
 
 int extended_gcd(int a, int b, int &x, int &y) {
     if (b == 0) {
-        x = 1;
-        y = 0;
-        return a;
+	x = 1;
+	y = 0;
+	return a;
     }
     int x1, y1;
     long long gcd = extended_gcd(b, a % b, x1, y1);
@@ -68,17 +68,17 @@ void unique(vector<int> &b) {
 vector<int> sieve(int n) {
     vector<int> smallest_prime_factor(n+1);
     for (int i = 2; i * i <= n; ++i) {
-        if (!smallest_prime_factor[i]) {
-            for (int j = i * i; j <= n; j += i)
-                smallest_prime_factor[j] = i;
-        }
+	if (!smallest_prime_factor[i]) {
+	    for (int j = i * i; j <= n; j += i)
+		smallest_prime_factor[j] = i;
+	}
     }
     vector<int> primes;
     for (int i = 2; i <= n; ++i) {
-        if (smallest_prime_factor[i] == 0){
-            smallest_prime_factor[i] = i;
-            primes.push_back(i);
-        }
+	if (smallest_prime_factor[i] == 0){
+	    smallest_prime_factor[i] = i;
+	    primes.push_back(i);
+	}
     }
     return primes ;
 }
@@ -91,25 +91,25 @@ struct custom_hash {
     static uint64_t fixed_random;
 
     static uint64_t splitmix64(uint64_t x) {
-        x += 0x9e3779b97f4a7c15;
-        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
-        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
-        return x ^ (x >> 31);
+	x += 0x9e3779b97f4a7c15;
+	x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+	x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+	return x ^ (x >> 31);
     }
     template <class T>
     size_t operator()(T x) const {
-        return splitmix64(x + fixed_random);
+	return splitmix64(x + fixed_random);
     }
 
     template <class T1, class T2>
     size_t operator()(const std::pair<T1, T2>& p) const {
-        auto h1 = std::hash<T1>{}(p.first);
-        auto h2 = std::hash<T2>{}(p.second);
+	auto h1 = std::hash<T1>{}(p.first);
+	auto h2 = std::hash<T2>{}(p.second);
 
-        uint64_t mixed1 = splitmix64(h1 + fixed_random);
-        uint64_t mixed2 = splitmix64(h2 + fixed_random);
+	uint64_t mixed1 = splitmix64(h1 + fixed_random);
+	uint64_t mixed2 = splitmix64(h2 + fixed_random);
 
-        return mixed1 ^ (mixed2 >> 1);
+	return mixed1 ^ (mixed2 >> 1);
     }
 };
 
@@ -129,36 +129,36 @@ const int INF = 1e18;
 vector<vector<int>> matrixMul(vector<vector<int>> &A,vector<vector<int>> &B,int n){
     vector<vector<int>> res(n,vector<int> (n)) ;
     for(int i = 0 ;  i<n ;  ++i){
-        for(int j = 0 ; j<n ; ++j){
-            for(int k = 0 ; k<n ; ++k){
-                res[i][j] = (res[i][j] + A[i][k]*B[k][j] + mod)%mod ;
-            }
-        }
+	for(int j = 0 ; j<n ; ++j){
+	    for(int k = 0 ; k<n ; ++k){
+		res[i][j] = (res[i][j] + A[i][k]*B[k][j] + mod)%mod ;
+	    }
+	}
     }
     return  res ;
 }
 
 vector<vector<int>> matrixExponentiation2D(vector<vector<int>> &x,int power){
     if(power==0){
-        return {{1, 0}, {0, 1}}; // identity matrix
+	return {{1, 0}, {0, 1}}; // identity matrix
     }
     if(power==1)return x;
     vector<vector<int>> res = matrixExponentiation2D(x,power/2) ;
     res = matrixMul(res,res,x.size()) ;
     if(power%2==1){
-        res = matrixMul(res,x,x.size()) ;
+	res = matrixMul(res,x,x.size()) ;
     }
     return res ;
 }
 vector<vector<int>> matrixExponentiation(vector<vector<int>> &x,int power){
     if(power==0){
-        return {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}; // identity matrix
+	return {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}; // identity matrix
     }
     if(power==1)return x;
     vector<vector<int>> res = matrixExponentiation(x,power/2) ;
     res = matrixMul(res,res,x.size()) ;
     if(power%2==1){
-        res = matrixMul(res,x,x.size()) ;
+	res = matrixMul(res,x,x.size()) ;
     }
     return res ;
 }
@@ -186,30 +186,23 @@ void matrixTranspose(vector<vector<U>> &matrix){
     int n = matrix.size() ;
     int m  = matrix[0].size() ;
     if (n == m) {
-        for(int i = 0 ; i < n ; ++i){
-            for(int j = i+1 ; j < m ; ++j ){
-                swap(matrix[i][j], matrix[j][i]) ;
-            }
-        }
+	for(int i = 0 ; i < n ; ++i){
+	    for(int j = i+1 ; j < m ; ++j ){
+		swap(matrix[i][j], matrix[j][i]) ;
+	    }
+	}
     }
     else{
-        vector<vector<U>> temp(m,vector<U>(n)) ;
-        for(int i  = 0 ; i < n ; ++i){
-            for (int j = 0 ; j < m ; ++j){
-                temp[j][i] = matrix[i][j] ;
-            }
-        }
-        matrix = move(temp) ;
+	vector<vector<U>> temp(m,vector<U>(n)) ;
+	for(int i  = 0 ; i < n ; ++i){
+	    for (int j = 0 ; j < m ; ++j){
+		temp[j][i] = matrix[i][j] ;
+	    }
+	}
+	matrix = move(temp) ;
     }
 }
-const int mxm = 2e5 + 1 ;
 
-int distance(int x, int y , int n ) {
-     if (y>x){
-        return y-x ;
-     }
-     return n - x + y  ; // got till the end and then wrap around
-}
 int MSB(int p){
     return 63 - __builtin_clzll(p) ;
 }
@@ -221,9 +214,9 @@ vector<int> distance(int node,int n,vector<vector<int>> &adj){
        int curr = q.front() ;
        q.pop() ;
        for(auto &x:adj[curr]){
-          if(dist[x]<=dist[curr]+1)continue;
-          dist[x] = dist[curr]+1 ;
-          q.push(x) ;
+	  if(dist[x]<=dist[curr]+1)continue;
+	  dist[x] = dist[curr]+1 ;
+	  q.push(x) ;
       }
     }
     return dist ;
@@ -233,70 +226,50 @@ class dsu{
     vector<int> parent,rank , mx ;
 
     dsu(int n ){
-        parent = vector<int>(n);
-        mx = vector<int>(n);
+	parent = vector<int>(n);
+	mx = vector<int>(n);
 
-        iota(parent.begin(),parent.end(),0) ;
-        iota(mx.begin(),mx.end(),0) ;
-        rank = vector<int>(n, 1);
+	iota(parent.begin(),parent.end(),0) ;
+	iota(mx.begin(),mx.end(),0) ;
+	rank = vector<int>(n, 1);
 
     }
     void make_set(int v){
-        parent[v] = v ; 
+	parent[v] = v ; 
     }
     void union_sets(int a , int b){
-        a = find_set(a) ;  
-        b = find_set(b) ; 
-        if(a!=b){
-            if(rank[a]<rank[b])swap(a,b) ; 
-            parent[b] = a  ;
-            mx[a] = max(mx[a],mx[b]) ;
-            if(rank[a]==rank[b])rank[a]++ ; 
-        }
+	a = find_set(a) ;  
+	b = find_set(b) ; 
+	if(a!=b){
+	    if(rank[a]<rank[b])swap(a,b) ; 
+	    parent[b] = a  ;
+	    mx[a] = max(mx[a],mx[b]) ;
+	    if(rank[a]==rank[b])rank[a]++ ; 
+	}
     }
     int find_set(int v){
-        if (parent[v] != v)parent[v] = find_set(parent[v]); 
-        return parent[v];   
+	if (parent[v] != v)parent[v] = find_set(parent[v]); 
+	return parent[v];
     }
 };
 
-int dist(vector<int> s,vector<int> e){
-    int n = s.size() ;  
-    int cnt = 0 ; 
-    for(int i = 0 ; i<n ; ++i){
-        if(s[i]==e[i])continue ;   
-        for(int j = i+1 ; j<n ; ++j){
-            if(s[j]==e[i]){
-                while(j>i){
-                    swap(s[j],s[j-1]) ; 
-                    j-- ; 
-                    cnt++ ;  
-                }
-                break ; 
-            }
-        }
-    }
-    return cnt ; 
-}
+/*
+the prcess can be done only if string lenght is atleast A   
+each op reduces string length by A-B   
+so  N - (A-B)*k >= A  
+=>  ( N - A )/(A-B) >= k 
+
+*/
 void solve(){
-    int n ; cin >> n ;   
-    int q ; cin >> q ; 
-    
-   vector<int> C(n) , add(n) ; 
-    while(q--){
-    	int i , x ; cin >> i >> x ;   
-    	i-- ;   
-    	add[i] += x ;   
-    	if(i+1<n){
-    		C[i] = max(C[i] , add[i]-add[i+1]) ;   
-    	}
-    }
-    vector<int> v(n) ;   
-    v[0] = 1 ;   
-    for(int i = 1 ; i<n ; ++i){
-    	v[i]  = v[i-1] + C[i-1]+1 ;   
-    }
-    put(getsum(v)) ; 
+     int n , a , b ;  cin >> n >> a >> b ; 
+     if(n<a){
+     	put(n) ;  
+     	return ;  
+     }
+     int k = floor_div(n-a,a-b) ;   
+     int rem = n -k*(a-b) ;   
+     if(rem >= a) rem -= a-b ;   
+     put(rem) ; 
 }
 
 signed main() {
@@ -309,10 +282,10 @@ signed main() {
     cerr<<"compiled"<<"\n";
 
     int tc =  1 ;
-    // cin >> tc ;
+    cin >> tc ;
 
     while(tc--){
-        solve();
+	solve();
     }
     auto end = high_resolution_clock::now();
     duration<double> diff = end - start;

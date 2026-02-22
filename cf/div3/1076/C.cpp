@@ -202,14 +202,7 @@ void matrixTranspose(vector<vector<U>> &matrix){
         matrix = move(temp) ;
     }
 }
-const int mxm = 2e5 + 1 ;
 
-int distance(int x, int y , int n ) {
-     if (y>x){
-        return y-x ;
-     }
-     return n - x + y  ; // got till the end and then wrap around
-}
 int MSB(int p){
     return 63 - __builtin_clzll(p) ;
 }
@@ -256,47 +249,30 @@ class dsu{
     }
     int find_set(int v){
         if (parent[v] != v)parent[v] = find_set(parent[v]); 
-        return parent[v];   
+        return parent[v];
     }
 };
 
-int dist(vector<int> s,vector<int> e){
-    int n = s.size() ;  
-    int cnt = 0 ; 
-    for(int i = 0 ; i<n ; ++i){
-        if(s[i]==e[i])continue ;   
-        for(int j = i+1 ; j<n ; ++j){
-            if(s[j]==e[i]){
-                while(j>i){
-                    swap(s[j],s[j-1]) ; 
-                    j-- ; 
-                    cnt++ ;  
-                }
-                break ; 
-            }
-        }
-    }
-    return cnt ; 
-}
 void solve(){
-    int n ; cin >> n ;   
-    int q ; cin >> q ; 
-    
-   vector<int> C(n) , add(n) ; 
-    while(q--){
-    	int i , x ; cin >> i >> x ;   
-    	i-- ;   
-    	add[i] += x ;   
-    	if(i+1<n){
-    		C[i] = max(C[i] , add[i]-add[i+1]) ;   
-    	}
-    }
-    vector<int> v(n) ;   
-    v[0] = 1 ;   
-    for(int i = 1 ; i<n ; ++i){
-    	v[i]  = v[i-1] + C[i-1]+1 ;   
-    }
-    put(getsum(v)) ; 
+     int n,q;  cin >> n >> q;  
+     vector<int> a(n), b(n) ;  
+     read(a) ;  read(b) ;   
+     vector<int> v(n) ;   
+     int mx = 0 ;   
+     for(int i = n-1 ; i>=0 ; --i){
+     	mx = max({a[i],b[i],mx}) ;  
+     	v[i] = mx;  
+     }
+     for(int i = 1 ; i <n ;  ++i)v[i] += v[i-1] ;  
+     
+     while(q--){
+     	int l , r ; cin >> l  >> r ; 
+     	l-- ; r--;  
+     	int sum = v[r] - (l>0?v[l-1]:0LL) ;  
+     	cout<<sum<<" " ; 
+     }
+     cout<<"\n" ; 
+     	
 }
 
 signed main() {
@@ -309,7 +285,7 @@ signed main() {
     cerr<<"compiled"<<"\n";
 
     int tc =  1 ;
-    // cin >> tc ;
+    cin >> tc ;
 
     while(tc--){
         solve();

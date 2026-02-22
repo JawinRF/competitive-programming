@@ -202,14 +202,7 @@ void matrixTranspose(vector<vector<U>> &matrix){
         matrix = move(temp) ;
     }
 }
-const int mxm = 2e5 + 1 ;
 
-int distance(int x, int y , int n ) {
-     if (y>x){
-        return y-x ;
-     }
-     return n - x + y  ; // got till the end and then wrap around
-}
 int MSB(int p){
     return 63 - __builtin_clzll(p) ;
 }
@@ -256,47 +249,63 @@ class dsu{
     }
     int find_set(int v){
         if (parent[v] != v)parent[v] = find_set(parent[v]); 
-        return parent[v];   
+        return parent[v];
     }
 };
 
-int dist(vector<int> s,vector<int> e){
-    int n = s.size() ;  
-    int cnt = 0 ; 
-    for(int i = 0 ; i<n ; ++i){
-        if(s[i]==e[i])continue ;   
-        for(int j = i+1 ; j<n ; ++j){
-            if(s[j]==e[i]){
-                while(j>i){
-                    swap(s[j],s[j-1]) ; 
-                    j-- ; 
-                    cnt++ ;  
-                }
-                break ; 
-            }
-        }
-    }
-    return cnt ; 
+/*
+	change the least frequent element into the most frequent 
+	Process from right to left   
+	there is no point if element 'x' exists in index>i while processing index i from right
+	if 'x' also occurs prior to index i  
+	
+	keep in pool and converted elements in two sets having only freq  
+	if pool smallest <= converted largest :  
+		remove the largest and put it to pool   
+		and put the smallest from pool to converted 
+	A[0] will always remain in array 
+*/
+int n , k ; 
+void opti(multiset<int> &p,multiset<int> &c,int &sum){
+	while(!c.empty() && !p.empty() && (*c.rbegin()>*p.begin()) ){
+    		p.insert(*c.rbegin()) ;
+    		sum -= *c.rbegin() ;   
+    		c.erase(prev(c.end()));
+    		 
+    		c.insert(*p.begin()) ;  
+    		sum += *p.begin() ;  
+    		p.erase(p.begin()) ;
+    	}
+    	while(!p.empty() && (sum+*p.begin()<=k)){
+    		sum += *p.begin() ;
+    		c.insert(*p.begin()) ;  
+    		p.erase(p.begin()) ;  
+    	} 
 }
 void solve(){
-    int n ; cin >> n ;   
-    int q ; cin >> q ; 
+     cin >> n >> k ;   
+     
+     map<int,int> mpp ;   
+     vector<int> a(n) ;  
+     read(a) ;  
+     for(int i = 0 ; i<n ; ++i)mpp[a[i]]++ ;   
+     
+     unordered_set<int> seen;
+
+    a.erase(remove_if(a.begin(), a.end(), 
+    [&seen](int x) {
+        return !seen.insert(x).second; 
+    }), a.end());
+    int m = a.size() ;  
+    multiset<int> p , c ;  
+    int sum = 0 ;  
     
-   vector<int> C(n) , add(n) ; 
-    while(q--){
-    	int i , x ; cin >> i >> x ;   
-    	i-- ;   
-    	add[i] += x ;   
-    	if(i+1<n){
-    		C[i] = max(C[i] , add[i]-add[i+1]) ;   
-    	}
+    for(int i = m-1 ; i>=0 ; --i){
+    	opti(p,c,sum) ;   
+    	p.insert(mpp[a[i]]) ; 
     }
-    vector<int> v(n) ;   
-    v[0] = 1 ;   
-    for(int i = 1 ; i<n ; ++i){
-    	v[i]  = v[i-1] + C[i-1]+1 ;   
-    }
-    put(getsum(v)) ; 
+    int ans = p.size() ; 
+    put(ans) ; 
 }
 
 signed main() {
@@ -309,7 +318,7 @@ signed main() {
     cerr<<"compiled"<<"\n";
 
     int tc =  1 ;
-    // cin >> tc ;
+    cin >> tc ;
 
     while(tc--){
         solve();

@@ -202,14 +202,7 @@ void matrixTranspose(vector<vector<U>> &matrix){
         matrix = move(temp) ;
     }
 }
-const int mxm = 2e5 + 1 ;
 
-int distance(int x, int y , int n ) {
-     if (y>x){
-        return y-x ;
-     }
-     return n - x + y  ; // got till the end and then wrap around
-}
 int MSB(int p){
     return 63 - __builtin_clzll(p) ;
 }
@@ -256,47 +249,41 @@ class dsu{
     }
     int find_set(int v){
         if (parent[v] != v)parent[v] = find_set(parent[v]); 
-        return parent[v];   
+        return parent[v];
     }
 };
 
-int dist(vector<int> s,vector<int> e){
-    int n = s.size() ;  
-    int cnt = 0 ; 
-    for(int i = 0 ; i<n ; ++i){
-        if(s[i]==e[i])continue ;   
-        for(int j = i+1 ; j<n ; ++j){
-            if(s[j]==e[i]){
-                while(j>i){
-                    swap(s[j],s[j-1]) ; 
-                    j-- ; 
-                    cnt++ ;  
-                }
-                break ; 
-            }
-        }
-    }
-    return cnt ; 
-}
 void solve(){
-    int n ; cin >> n ;   
-    int q ; cin >> q ; 
+     int n , Ax , Ay , Bx, By ; cin >> n >> Ax >> Ay >> Bx >> By ;  
+     vector<int> x(n) , y(n) ;  
+     read(x) ; read(y) ;  
+     vector<int> u = x;   
+     unique(u) ;  
+     int m = u.size() ;  
+     vector<int> y_mx(m,-INF),y_mn(m,INF),dp_l(m) ,dp_h(m) ; 
+     
+     for(int i = 0 ; i<n ; ++i){
+     	int idx = lower_bound(all(u),x[i]) - u.begin() ;  
+     	
+     	y_mx[idx]  = max(y_mx[idx],y[i])  ;   
+     	y_mn[idx] = min(y_mn[idx] ,y[i])  ; 
+     }
+     
+     dp_l[m-1] = y_mx[m-1] - y_mn[m-1] + abs(By-y_mx[m-1]) + abs(Bx - u[m-1]) ;  
     
-   vector<int> C(n) , add(n) ; 
-    while(q--){
-    	int i , x ; cin >> i >> x ;   
-    	i-- ;   
-    	add[i] += x ;   
-    	if(i+1<n){
-    		C[i] = max(C[i] , add[i]-add[i+1]) ;   
-    	}
-    }
-    vector<int> v(n) ;   
-    v[0] = 1 ;   
-    for(int i = 1 ; i<n ; ++i){
-    	v[i]  = v[i-1] + C[i-1]+1 ;   
-    }
-    put(getsum(v)) ; 
+     dp_h[m-1] = y_mx[m-1] - y_mn[m-1] + abs(By-y_mn[m-1]) + abs(Bx - u[m-1]) ;  
+     
+     for(int i = m-2 ; i>=0 ; --i){
+     	int d = ( u[i+1] - u[i] ) + ( y_mx[i] - y_mn[i]) ;   
+     	
+     	dp_l[i] = d + min(abs(y_mx[i] - y_mx[i+1]) + dp_h[i+1], 
+                           abs(y_mx[i] - y_mn[i+1]) + dp_l[i+1]);
+
+	dp_h[i] = d + min(abs(y_mn[i] - y_mn[i+1]) + dp_l[i+1], 
+                           abs(y_mn[i] - y_mx[i+1]) + dp_h[i+1]);
+     }
+     int ans = min( dp_l[0] + (u[0]-Ax) + abs(y_mn[0] - Ay)  , dp_h[0] + (u[0]-Ax) + abs(y_mx[0] - Ay) ) ;  
+     put(ans) ;  
 }
 
 signed main() {
@@ -309,7 +296,7 @@ signed main() {
     cerr<<"compiled"<<"\n";
 
     int tc =  1 ;
-    // cin >> tc ;
+    cin >> tc ;
 
     while(tc--){
         solve();
