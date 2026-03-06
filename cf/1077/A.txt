@@ -1,0 +1,6 @@
+...,4,n-3,3,n-2,2,n-1,1,n
+take any suffix of this sequence it can be noted that it only shrinks either the left or the right boundary
+
+
+
+
