@@ -1,0 +1,37 @@
+
+f(2) = 3*f(1) - 2*f(0) 
+	= 3y - 2x
+f(3) = 3*(3y-2x) - 2*y
+	= 3^2 y - 3*2x - 2*y 
+
+f(4) = 3*(3^2y -3*2x - 2*y) - 2*(3y - 2x)  
+	= 3^3 y - 3^2 2x - 
+
+
+f(k) - f(k-1) = 2*( f(k-1) - f(k-2) ) 
+
+
+so difference between adjacent values is 2times the difference between 
+previous adjacent values 
+
+y-x -> 2*(y-x) -> 2^2 (y-x) -> 2^3 (y-x) 
+
+
+so 
+f(k) - f(k-1) = 2^(k-1) * ( y - x )  
+
+
+NOW 
+
+f(k-1) - f(k-2) = 2^(k-2) * ( y - x )  
+
+so on  
+
+summing 
+
+f(k) - x =  2^(k-1) * ( y - x ) + 2^(k-2)*(y-x) + ... + (y-x)
+	 = (y-x) * [ 2^k - 1 ] 
+
+=> f(k) = x + (y-x) * [ 2^k - 1 ] 
+
+
