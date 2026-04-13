@@ -27,40 +27,40 @@ class DSU:
             return True
         return False
 
+m = [bytearray(8000) for _ in range(8000)]
+adj = [[] for _ in range(8000)]
+
 def f():
 	n = int(input())
-	m = [[0 for _ in range(n)] for _ in range(n)]
-	adj = [[] for _ in range(n)]
+	for i in range(n):
+		adj[i].clear()
+		for j in range(n):
+			m[i][j] = 0
+
 	diag = 0
+	deg = [0]*n
 	for i in range(n):
 		row = input().strip()
 		for j in range(n):
 			if row[j] == '1':
-				if j!=i:m[i][j] = 1
-				else: diag+=1
+				if j!=i:
+					m[i][j] = 1
+					deg[i] += 1
+				else:
+					diag+=1
+
 	if diag!=n:
 		print("No")
 		return	
+
 	edge_count = 0	
-	'''
-	for i in range(n):
-		for j in range(n):
-			if not m[i][j]:continue
-			flag = 0
-			for k in range(n):
-				if m[i][k] and m[k][j]:
-					flag = 1
-					break
-			if not flag:
-				tree[i][j] = 1
-				edge_count += 1
-	''' 
-	sz = [ [m[i].count(1),i] for i in range(n) ]
+
+	sz = [[deg[i],i] for i in range(n)]
 	sz.sort(reverse = True)
 	
 	for i in range(n):
 		size,u = sz[i]
-		masked = [0]*n 
+		masked = bytearray(n)
 		for j in range(i+1,n):
 			s2,v = sz[j] 
 			if m[u][v]==1 and not masked[v]:
@@ -69,40 +69,45 @@ def f():
 				if edge_count>=n:
 					print("No")
 					return
+				row = m[v]
 				for w in range(n):
-					if m[v][w]==1:
+					if row[w]==1:
 						masked[w]=1
+
 	if edge_count!=n-1 or diag!=n:
 		print("No")
 		return
+
 	dsu = DSU(n)
 	for i in range(n):
+		
 		for j in adj[i]:
 			dsu.union(i,j)
+
 	if dsu.components!=1:
 		print("No")
 		return
+
 	for i in range(n):
-        	visited = [0]*n
-        	visited[i] = 1
-        	q = deque([i])
-        	while q:
-        		curr = q.popleft()
-        		for j in adj[curr]:
-        			if not visited[j]:
-        				visited[j] = 1
-        				q.append(j)
-        	for j in range(n):
-        		if i != j:
-        			if visited[j] != m[i][j]:
-        				print("No")
-        				return
+		visited = bytearray(n)
+		visited[i] = 1
+		q = deque([i])
+		while q:
+			curr = q.popleft()
+			for j in adj[curr]:
+				if not visited[j]:
+					visited[j] = 1
+					q.append(j)
+		for j in range(n):
+			if i != j:
+				if visited[j] != m[i][j]:
+					print("No")
+					return
+
 	print("Yes")
 	for i in range(n):
-		for j in adj[i]:
-			print(f"{i+1} {j+1}")
-	
-				
-			
+		for v in adj[i]:
+			print(f"{i+1} {v+1}")
+
 for _ in range(t):
 	f()
