@@ -1,0 +1,19 @@
+Of course, we can iterate through the positions l
+ and r
+, and then check if we get a valid cut. However, there is a simpler solution.
+Of course, we can iterate through the positions l
+ and r
+, and then check if we get a valid cut. However, there is a simpler solution.
+Thus, if the sum of the array is not divisible by 3
+, then there is no suitable cut; and if it is divisible by 3
+, then any cut will be valid.
+
+Solution (BledDest)
+t = int(input())
+for i in range(t):
+    n = int(input())
+    a = list(map(int, input().split()))
+    if sum(a) % 3 == 0:
+        print("1 2")
+    else:
+        print("0 0")
