@@ -1,4 +1,4 @@
-	#include <bits/stdc++.h>
+#include <bits/stdc++.h>
 #pragma GCC optimize("O3", "unroll-loops")
 #define int long long
 #define ll long long
@@ -39,59 +39,61 @@ ostream& operator<<(ostream& os, const pair<T, U>& p) {
 }
 
 /*
-  x>=f(x) bcz it can be shown that x-f(x) >= 0 
-  		
+
 */
-int sum(int m){
-	int c = 0 ;  
-	while(m>0){
-		c += m%10 ;  
-		m /= 10 ;  
-	}
-	return c ; 
+string to_bin(int x){
+    if(x == 0) return "0";
+    string res = "";
+    while(x){
+        res.push_back((x & 1) + '0');
+        x >>= 1;
+    }
+    reverse(res.begin(), res.end());
+    return res;
 }
-void solve(){
-	int tc =  1 ;
-    	cin >> tc ;
-	
-	vector<int> l ; 
-	
-	for(int i = 1 ; i<=162 ; ++i){
-		int tmp = sum(i) ;  
-		if(tmp==i){
-			l.pb(i) ;  
+void solve(int s, int m){
+    cout<<"sum: "<<s<<" "<<"mask: "<<m<<"\n" ; 
+    vector<int> sum(s+1,INF)  ;  
+    vector<int> used(s+1,-1);
+    sum[0] = 0 ;   
+    vector<int> par(s+1,-1) ;   
+    for(int j = 0 ; j<=s ; ++j){
+    	if(sum[j]==INF)continue ; 
+    	for(int i = m;i>0 ; i= (i-1)&m){
+    		if(j+i>s)continue ;  
+    		if(sum[j]+1<sum[j+i]){
+    			sum[j+i] = 1 + sum[j] ;  
+    			par[j+i] = j ;  
+    			used[j+i] = i;
+    		}
+    	}
+    }
+    if(sum[s]!=INF){
+	    cout<<"MIN STEPS: "<<sum[s]<<"\n";
+	    cout<<"Binary(STEPS): "<<to_bin(sum[s])<<"\n";
+
+	    vector<int> moves;
+	    int cur = s;
+
+	    while(cur != 0 && used[cur] != -1){
+		    moves.pb(used[cur]);
+		    cur = par[cur];
 		}
+
+	    reverse(all(moves));
+
+	    cout<<"Moves (decimal): ";
+	    for(auto x : moves) cout<<x<<" ";
+	    cout<<"\n";
+
+	    cout<<"Moves (binary): ";
+	    for(auto x : moves) cout<<to_bin(x)<<" ";
+	    cout<<"\n";
 	}
-	
-	while(tc--){
-		int x ;  cin >> x ;  
-		string t = to_string(x) ; 
-		char leading = t[0] ;  
-		x = sum(x)  ;
-	        auto it = lower_bound(all(l),x) ; 
-	        int diff = INF ; 
-	        if ( it!= l.end()){
-	        	diff = (*it)-x ;  
-	        }
-	        if(it!=l.begin()){
-	        	it-- ;  
-	        	diff = min(diff,x - (*it)) ;  
-	        }
-	        sort(t.rbegin(),t.rend()) ; 
-	        
-	        int count = 0 , i = 0 ; 
-	        int f = 0 ; for(char x:t)if(x==leading)f++ ; 
-	        while(i<(int)t.length() && diff>0){
-	        	diff -= (int)(t[i]-'0') ; 
-	        	if(t[i]==leading){
-	        		if(f==1)diff++ ;  
-	        		f-- ; 
-	        	}
-	        	count++ ; i++ ; 
-	        }
-	        
-	        put(count) ; 
-	}
+	else{
+	    cout<<"-1\n";
+	}	
+	cout<<"\n\n" ; 
 }
 
 signed main() {
@@ -103,7 +105,15 @@ signed main() {
     auto start = high_resolution_clock::now();
     cerr<<"compiled"<<"\n";
 
-    solve() ; 
+    int tc =  1 ;
+    
+
+    while(tc--){
+    	int s ; cin >> s ;  
+    	for(int i = 1 ; i<=s ; ++i){
+    		solve(s,i);
+    	}
+    }
     auto end = high_resolution_clock::now();
     duration<double> diff = end - start;
     cerr << fixed << setprecision(9) << diff.count() << "\n";
