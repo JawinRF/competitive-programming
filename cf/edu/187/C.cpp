@@ -41,59 +41,37 @@ ostream& operator<<(ostream& os, const pair<T, U>& p) {
 /*
 
 */
-string to_bin(int x){
-    if(x == 0) return "0";
-    string res = "";
-    while(x){
-        res.push_back((x & 1) + '0');
-        x >>= 1;
-    }
-    reverse(res.begin(), res.end());
-    return res;
-}
-void solve(int s, int m){
-    cout<<"sum: "<<s<<" "<<"mask: "<<m<<"\n" ; 
-    vector<int> sum(s+1,INF)  ;  
-    vector<int> used(s+1,-1);
-    sum[0] = 0 ;   
-    vector<int> par(s+1,-1) ;   
-    for(int j = 0 ; j<=s ; ++j){
-    	if(sum[j]==INF)continue ; 
-    	for(int i = m;i>0 ; i= (i-1)&m){
-    		if(j+i>s)continue ;  
-    		if(sum[j]+1<sum[j+i]){
-    			sum[j+i] = 1 + sum[j] ;  
-    			par[j+i] = j ;  
-    			used[j+i] = i;
-    		}
-    	}
-    }
-    if(sum[s]!=INF){
-	    cout<<"MIN STEPS: "<<sum[s]<<"\n";
-	    cout<<"Binary(STEPS): "<<to_bin(sum[s])<<"\n";
+bool f(int s , int m , int lim){
+	int nxt = 0 ; 
+	for(int i = 59 ; i>=0; --i){
+		int curr = ((s>>i)&1LL) + 2*nxt ;  //doing this operation s remains as it is hence nxt == s whole time so no overflow
 
-	    vector<int> moves;
-	    int cur = s;
-
-	    while(cur != 0 && used[cur] != -1){
-		    moves.pb(used[cur]);
-		    cur = par[cur];
+		if((m>>i)&1LL){
+			nxt = max(curr-lim,0LL) ; 
 		}
-
-	    reverse(all(moves));
-
-	    cout<<"Moves (decimal): ";
-	    for(auto x : moves) cout<<x<<" ";
-	    cout<<"\n";
-
-	    cout<<"Moves (binary): ";
-	    for(auto x : moves) cout<<to_bin(x)<<" ";
-	    cout<<"\n";
+		else{
+			nxt = curr ;  
+		}
 	}
-	else{
-	    cout<<"-1\n";
-	}	
-	cout<<"\n\n" ; 
+	return nxt == 0 ;  
+}
+void solve(){
+     int s,m ; cin >> s >> m ; 
+     if(!f(s,m,INF)){
+     	put(-1) ;  
+     	return ;
+     }
+     int l = 0 , r = (1LL<<60) ; 
+     while(l<=r){
+     	int mid = l + (r-l)/2 ;   
+     	if(f(s,m,mid)){
+     		r = mid-1 ;  
+     	}
+     	else{
+     		l = mid+1;
+     	}
+     }
+     put(l) ; 
 }
 
 signed main() {
@@ -106,13 +84,10 @@ signed main() {
     cerr<<"compiled"<<"\n";
 
     int tc =  1 ;
-    
+    cin >> tc ;
 
     while(tc--){
-    	int s ; cin >> s ;  
-    	for(int i = 1 ; i<=s ; ++i){
-    		solve(s,i);
-    	}
+        solve();
     }
     auto end = high_resolution_clock::now();
     duration<double> diff = end - start;
