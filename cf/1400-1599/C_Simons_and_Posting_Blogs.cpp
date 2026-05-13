@@ -112,12 +112,12 @@ void solve(){
         for(int j = 0 ; j< n ; ++j){
             if(posted[j])continue ;
 
-            vector<int> t ; 
+            int valid = 0 ;
             for(auto &x:L[j]){
                 if(seen[x])continue ;
-                t.pb(x) ;
+                L[j][valid++] = x ;
             }
-            L[j] = t ; 
+            while(L[j].size() > valid)L[j].pop_back() ;
             if(best == -1 || L[j]<L[best]){
                 best = j ; 
             }
