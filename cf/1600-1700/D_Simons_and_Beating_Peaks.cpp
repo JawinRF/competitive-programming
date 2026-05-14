@@ -39,60 +39,43 @@ ostream& operator<<(ostream& os, const pair<T, U>& p) {
 }
 
 /*
-Maximize array size
-the maximum element can never be removed
-which means that it forms a hard boundary such that elements to the left of maximum element cannot interact with elements to the right of maximum element
-so we can split the array into two parts and solve them independently
-we can remove the element element immedeiate to left or 
+We use cartesian tree to solve this problem in O(n) time. 
+to maximize the remaining array size (which minimizes deletions)
+we simply need to find the element i that sits at the maximum depth in the Cartesian Tree.
+
 */
-// int func(vector<int> &v, int l, int r){
-//     if(r-l<=1) return 0 ;
-//     int idx = max_element(v.begin() + l , v.begin() + r + 1) - v.begin() ;
-    
-//     int res = min((idx-l) + func(v,idx+1,r), (r-idx) + func(v,l,idx-1)) ;
-//     return res  ;
-// }
-int pos[500005] ;
-int sparse[20][500005] ;
-int query(int l, int r){
-    int len = r-l+1 ;
-    int p = MSB(len) ;
-    return max(sparse[p][l], sparse[p][r-(1<<p)+1]) ;
-}
-void build(vector<int> &v){
-    int n = v.size() ;
-    for(int i = 0 ; i < n ; ++i) sparse[0][i] = v[i] ;
-    for(int p = 1 ; p < 20 ; ++p){
-        for(int i = 0 ; i + (1<<p) - 1 < n ; ++i){
-            sparse[p][i] = max(sparse[p-1][i], sparse[p-1][i+(1<<(p-1))]) ;
-        }
-    }
-}
-int func(vector<int> &v, int l, int r){
-    if(r-l<=1) return 0 ;
-    // int idx = max_element(v.begin() + l , v.begin() + r + 1) - v.begin() ;
-    int mx = query(l,r) ;
-    int idx = pos[mx] ;// given input is a perm
-    int res = min((idx-l) + func(v,idx+1,r), (r-idx) + func(v,l,idx-1)) ;
-    return res  ;
-}
+
 void solve(){
     int n ; cin >> n ;  
     vector<int> v(n) ; read(v) ;
-    build(v) ;
-    for(int i = 0 ; i < n ; ++i) pos[v[i]] = i ;
-    put(func(v,0,n-1)) ;
+    vector<int> del(n) ;   
+    stack<int> st ;
+    for(int i = 0 ; i<n ; ++i){
+        while(!st.empty() && v[st.top()]<v[i]){
+            st.pop() ;
+        }
+        int d = i ; 
+        if(!st.empty()){
+            d = i - (int)st.size() ;
+        }
+        del[i] = d ;
+        st.push(i) ;
+    }
+    while(!st.empty()) st.pop() ;
+    for(int i = n-1 ; i>=0 ; --i){
+        while(!st.empty() && v[st.top()]<v[i]){
+            st.pop() ;
+        }
+        int d = n-i-1 ; 
+        if(!st.empty()){
+            d = n-i-1 - (int)st.size() ;
+        }
+        del[i] += d ;
+        st.push(i) ;
+    }
+    put(*min_element(all(del))) ;
 }
-/*
-    T(n) =  T(idx-l) + T(r-idx) + 2*O(1)
-    T(2) = O(1)  , T(1) = O(1) 
-    T(0) = O(1)
-    T(n) = 2*T(n/2) + O(1)
-    if we take skewed partition then T(n) = T(n-1) + O(1) = O(n) 
-    T(n) = a*T(n/b) + n^c where c = log a base b
-    a=2 , b = 2 , c = 0 b^0 = 1 2>a 
-    hence third case n^1 = O(n)
-*/
+
 signed main() {
     ios_base::sync_with_stdio(false);
     cin.tie(0);
