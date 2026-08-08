@@ -44,6 +44,8 @@ The predicate asks
 do I still hold a hit bag?
 because that's what decides whether he can receive one more.
 */
+
+/* old: O(n log n), binary search the largest prefix still holding a hit
 void solve(){
     int n;
     string s;
@@ -71,6 +73,26 @@ void solve(){
         }
         if (ans == -1){put(k) ;} 
         else put(min(n, ans + 2)) ;
+    }
+}
+*/
+
+/*
+He always holds exactly k bags (discard one, receive one) and never
+discards a miss, so misses only pile up. He stalls the moment all k
+bags in hand are misses, i.e. the moment he receives his k-th 'x'.
+So ans(k) = position of the k-th 'x', or n if there are fewer than k.
+*/
+void solve(){
+    int n;
+    string s;
+    cin >> n >> s;
+    vector<int> pos;
+    for (int i = 0; i<n; i++){
+        if (s[i]=='x')pos.pb(i+1);
+    }
+    for (int k = 1; k <= n; k++){
+        put((k<=(int)pos.size()?pos[k-1]:n));
     }
 }
 
