@@ -58,10 +58,10 @@ and query 1 swaps in whichever array the flag names.
 // }
 vector<int> f(int n , vector<int> &a){
     vector<int> res(n+1) ;
-    vector<int> mpp(n+1) ; 
-    for(int i = 1 ; i<=n ; ++i){
-        mpp[a[i]] = i ;
-    }
+    // vector<int> mpp(n+1) ; 
+    // for(int i = 1 ; i<=n ; ++i){
+    //     mpp[a[i]] = i ;
+    // }
     for(int i = 1 ; i<=n ; ++i){
         // for(int j = 1 ; j<=n ; ++j){
         //     if(a[j]==i){
@@ -69,7 +69,8 @@ vector<int> f(int n , vector<int> &a){
         //         break ;
         //     }
         // }
-        res[i] = mpp[i] ;
+        // res[i] = mpp[i] ;
+        res[a[i]] = i ;
     }
     return res ;
 }
