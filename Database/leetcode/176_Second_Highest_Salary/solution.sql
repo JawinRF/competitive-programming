@@ -87,3 +87,5 @@ SELECT (
     LIMIT 1
 )
 AS SecondHighestSalary; 
+
+-- The idea of using partition  is also pretty good 
