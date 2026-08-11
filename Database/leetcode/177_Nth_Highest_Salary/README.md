@@ -149,6 +149,10 @@ LIMIT 1 OFFSET N-1     -- syntax error
 You must assign first with `SET N = N - 1`, then use the plain variable. This
 is the main reason people fail 177 straight after they pass 176.
 
+The restriction covers the `LIMIT` clause **only**, not SQL arithmetic in
+general. Full explanation:
+[notes/limit_offset_arithmetic.md](../../notes/limit_offset_arithmetic.md).
+
 **Second trap:** `N = 0` makes `OFFSET -1`, which raises an error. The
 `DENSE_RANK` version returns `NULL` instead. LeetCode does not test `N <= 0`.
 
