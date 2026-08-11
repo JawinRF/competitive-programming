@@ -175,6 +175,10 @@ BEGIN
       )
   );
 END
+
+-- This essentially returns a table telling how many
+-- salaries are more then employee[i]
+-- we then find the one that says N-1
 ```
 
 **Idea:** a salary is the Nth highest when exactly `N-1` distinct salaries beat
