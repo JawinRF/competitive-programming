@@ -42,7 +42,29 @@ ostream& operator<<(ostream& os, const pair<T, U>& p) {
 
 */
 void solve(){
-    
+    int n ; cin >> n;
+    string s; cin >> s;
+    int cnt0 = count(all(s), '0');
+    int cnt1 = n - cnt0;
+    if(abs(cnt0 - cnt1) > 2 ){
+        put(-1) ; 
+        return ; 
+    }
+    string t ;  
+    for(int i = 0 ; i<n ; ){
+        auto it = find(s.begin()+i , s.end() , s[i]== '0' ? '1' : '0');
+        t += s[i] ; 
+        if(it == s.end()) break ;  
+        else{
+            i = it - s.begin() ; 
+        }
+    }
+    int m = t.length() ; 
+    int d0 = count(all(t), '0');
+    int d1 = m - d0;
+
+    int ans = n - m + max(0LL, 1LL*abs((cnt0-cnt1) - (d0 - d1)) - 1);
+    put(ans) ; 
 }
 
 signed main() {
