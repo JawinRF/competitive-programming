@@ -64,6 +64,33 @@ void solve(){
     //  = n!/((n-r)!*(r-1)! * r)
     //   = (nC(r-1)) * ((n-r+1)/r)
     vector<vector<int>> prefixNCr(m, vector<int>(n+1, 0)) ;
+    // for(int i = 0 ; i<m ; ++i){
+    //     prefixNCr[i][0] = 1 ;   
+    //     int ncR = 1 ; // nC0 = 1
+    //     for(int r = 1 ; r<=n ; ++r){
+    //         if(r>s[i]){
+    //             prefixNCr[i][r] = prefixNCr[i][r-1] ;
+    //             continue ;
+    //         }
+    //         int newTerm ; // ncr = nc(r-1) * (n-r+1)/r
+    //         newTerm = ncR * (s[i]-r+1) % mod ;
+    //         newTerm = newTerm * exp(r, mod-2, mod) % mod ; // r^-1 = r^(mod-2) mod mod
+    //         ncR = newTerm ;
+    //         prefixNCr[i][r] = (prefixNCr[i][r-1] + newTerm) ;  
+    //         if(prefixNCr[i][r]>=mod) prefixNCr[i][r] -= mod ;
+    //     }
+    // }
+
+    // We can precompute inverse exponention
+    vector<int> inv(n + 1);
+    inv[1] = 1;
+    // For a prime modulus mod, inv[i] means: i*inv[i] = 1 mod mod
+    // inv[i] = (mod - mod/i) * inv[mod % i] % mod
+    // which is obtained from relating inv[i] and inv[mod%i]
+    for (int i = 2; i <= n; ++i) {
+        inv[i] = ((-mod/i) * inv[mod % i] % mod + mod) %mod;
+    }
+
     for(int i = 0 ; i<m ; ++i){
         prefixNCr[i][0] = 1 ;   
         int ncR = 1 ; // nC0 = 1
@@ -74,7 +101,7 @@ void solve(){
             }
             int newTerm ; // ncr = nc(r-1) * (n-r+1)/r
             newTerm = ncR * (s[i]-r+1) % mod ;
-            newTerm = newTerm * exp(r, mod-2, mod) % mod ; // r^-1 = r^(mod-2) mod mod
+            newTerm = newTerm * inv[r] % mod ; // r^-1 = r^(mod-2) mod mod
             ncR = newTerm ;
             prefixNCr[i][r] = (prefixNCr[i][r-1] + newTerm) ;  
             if(prefixNCr[i][r]>=mod) prefixNCr[i][r] -= mod ;
