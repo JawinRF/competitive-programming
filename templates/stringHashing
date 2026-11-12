@@ -1,0 +1,20 @@
+struct StringHash{
+    const int MOD = 1e9 + 9;
+    const int p = 31 ;
+    vector<int> p_pow, h;
+
+    StringHash(const string &s){
+        int n = (int)s.size() ; 
+        p_pow.resize(n+1);
+        h.resize(n+1);
+        p_pow[0] = 1;
+        for(int i = 0 ; i<n ; ++i){
+            p_pow[i+1] = (p_pow[i] * p) % MOD ;
+            h[i+1] = (h[i]*p + (s[i]-'a'+1))% MOD ;
+        }
+    }
+
+    int get_hash(int l , int r){
+        return (h[r+1] -h[l]*p_pow[r-l+1]%MOD + MOD ) % MOD ;
+    }
+};
