@@ -1,0 +1,12 @@
+const int MAXN = 200005 + 1 ;
+vector<int> fact(MAXN) , invFact(MAXN) ;
+void precompute(){
+    fact[0] = 1 ;
+    for(int i = 1 ; i < MAXN ; ++i) fact[i] = fact[i-1] * i % mod ;
+    invFact[MAXN-1] = exp(fact[MAXN-1], mod-2, mod) ;
+    for(int i = MAXN-2 ; i >= 0 ; --i) invFact[i] = invFact[i+1] * (i+1) % mod ;
+}
+int nCr(int n, int r){
+    if(r < 0 || r > n) return 0 ;
+    return fact[n] * invFact[r] % mod * invFact[n-r] % mod ;
+}
